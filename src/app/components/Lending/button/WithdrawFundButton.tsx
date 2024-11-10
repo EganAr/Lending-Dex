@@ -1,33 +1,34 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { getUserDeposit, withdraw } from "@/web3";
 import Image from "next/image";
-import GetHealthFactor from "../getters/GetHealthFactor";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import GetUserDeposit from "../getters/GetUserDeposit";
 
 export default function WithdrawFundButton() {
-  const { account } = useWallet();
   const [balance, setBalance] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { account } = useWallet();
   const { toast } = useToast();
 
+  const fetchBalance = useCallback(async () => {
+    if (!account || account === "" || account.length !== 42) return;
+    try {
+      const balance = await getUserDeposit(account);
+      setBalance(balance);
+    } catch (error) {
+      console.log("error fetching balance", error);
+    }
+  }, [account, toast]);
+
   useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const balance = await getUserDeposit(account);
-        setBalance(balance);
-      } catch (error) {
-        console.log("error fetching balance", error);
-      }
-    };
     fetchBalance();
-  }, [account, handleWithdraw]);
+  }, [account, fetchBalance]);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -69,6 +70,7 @@ export default function WithdrawFundButton() {
 
     try {
       await withdraw(amount.toString(), account);
+      await fetchBalance();
 
       toast({
         title: "Success!",

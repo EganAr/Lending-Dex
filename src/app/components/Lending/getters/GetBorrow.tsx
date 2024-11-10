@@ -9,6 +9,7 @@ export default function GetBorrow() {
   const [balance, setBalance] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === "" || account.length !== 42) return;
     const fetchUserBorrow = async () => {
       try {
         const userDeposit = await getUserBorrow(account);

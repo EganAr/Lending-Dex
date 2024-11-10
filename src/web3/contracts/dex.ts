@@ -1,9 +1,6 @@
 import { DEXContract } from "./contractAddresses";
-import Dex_DLPTokenABI from "../abi/dex/DexV4#dex_DLPTokenV3.json";
 import Dex_daiTokenABI from "../abi/dex/DexV4#dex_daiTokenV4.json";
 import Dex_ethTokenABI from "../abi/dex/DexV4#dex_ethTokenV4.json";
-import Dex_firstPriceFeedABI from "../abi/dex/DexV4#dex_firstPriceFeedV4.json";
-import Dex_secondPriceFeedABI from "../abi/dex/DexV4#dex_secondPriceFeedV4.json";
 import Dex_dexABI from "../abi/dex/DexV4#dexV4.json";
 import Web3 from "web3";
 
@@ -15,10 +12,7 @@ interface TotalSupplyResult {
 const web3 = new Web3(window.ethereum);
 if (!web3) throw new Error("Please install MetaMask");
 
-const dex_DLPToken = new web3.eth.Contract(
-  Dex_DLPTokenABI.abi,
-  DEXContract.DLPToken
-);
+
 const dex_daiToken = new web3.eth.Contract(
   Dex_daiTokenABI.abi,
   DEXContract.DAIToken
@@ -26,14 +20,6 @@ const dex_daiToken = new web3.eth.Contract(
 const dex_ethToken = new web3.eth.Contract(
   Dex_ethTokenABI.abi,
   DEXContract.ETHToken
-);
-const dex_firstPriceFeed = new web3.eth.Contract(
-  Dex_firstPriceFeedABI.abi,
-  DEXContract.firstPriceFeed
-);
-const dex_secondPriceFeed = new web3.eth.Contract(
-  Dex_secondPriceFeedABI.abi,
-  DEXContract.secondPriceFeed
 );
 const dex = new web3.eth.Contract(Dex_dexABI.abi, DEXContract.DEX);
 
@@ -122,10 +108,14 @@ export const dex_swap = async (
   const amountInWei = web3.utils.toWei(amountIn, "ether");
   const minAmountOutWei = web3.utils.toWei(minAmountOut, "ether");
   try {
+    if (tokenIn === DEXContract.DAIToken) {
+      await dex_approveDai(amountInWei, from);
+    } else {
+      await dex_approveEth(amountInWei, from);
+    }
     const result = await dex.methods
       .swap(tokenIn, amountInWei, minAmountOutWei)
       .send({ from: from });
-    console.log("result", result);
 
     return result;
   } catch (error) {

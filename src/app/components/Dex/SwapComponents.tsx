@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { DEXContract } from "@/web3";
 import { Wallet } from "lucide-react";
+import Image from "next/image";
 
 export const TOKEN: {
   [key: string]: { address: string; symbol: string; icon: string };
@@ -29,10 +30,12 @@ function TokenOption({ token }: any) {
   return (
     <div className="flex items-center gap-2">
       <div className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
-        <img
+        <Image
           src={token.icon}
           alt={token.symbol}
           className="w-full h-full object-contain"
+          width={30}
+          height={30}
         />
       </div>
       <span className="font-medium">{token.symbol}</span>

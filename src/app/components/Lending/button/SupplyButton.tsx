@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { depositCollateral, getCollateralWalletBalance } from "@/web3";
 import Image from "next/image";
@@ -9,28 +9,28 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 export default function SupplyButton() {
-  const { account } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   const [walletBalance, setWalletBalance] = useState("");
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { account } = useWallet();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchWalletBalance = async () => {
-      if (account && account !== "" && account.length === 42) {
-        try {
-          const userWalletBalance = await getCollateralWalletBalance(account);
+  const fetchWalletBalance = useCallback(async () => {
+    if (!account || account === "" || account.length !== 42) return;
+    try {
+      const userWalletBalance = await getCollateralWalletBalance(account);
 
-          setWalletBalance(userWalletBalance);
-        } catch (error) {
-          console.error("Error fetching collateral:", error);
-          setWalletBalance("0");
-        }
-      }
-    };
+      setWalletBalance(userWalletBalance);
+    } catch (error) {
+      console.error("Error fetching collateral:", error);
+      setWalletBalance("0");
+    }
+  }, [account, toast]);
+
+  useEffect(() => {
     fetchWalletBalance();
-  }, [account, handleDeposit]);
+  }, [account, fetchWalletBalance]);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -72,7 +72,7 @@ export default function SupplyButton() {
 
     try {
       await depositCollateral(amount.toString(), account);
-      setTimeout(() => {}, 1500);
+      await fetchWalletBalance();
 
       toast({
         title: "Success!",

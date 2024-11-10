@@ -13,6 +13,7 @@ export default function GetWalletBalanceEth() {
   const [walletBalanceInUSD, setWalletBalanceInUSD] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === "" || account.length !== 42) return;
     const fetchWalletBalance = async () => {
       try {
         const userWalletBalance = await getCollateralWalletBalance(account);

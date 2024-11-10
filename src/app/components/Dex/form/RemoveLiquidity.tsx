@@ -1,7 +1,7 @@
 "use client";
 
 import { dex_getLpTokensBalance, dex_removeLiquidity } from "@/web3";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Wallet } from "lucide-react";
@@ -13,17 +13,19 @@ export default function RemoveLiquidity() {
   const { account } = useWallet();
   const { toast } = useToast();
 
+  const fetchBalance = useCallback(async () => {
+    if (!account || account === '' || account.length !== 42) return;
+    try {
+      const balance = await dex_getLpTokensBalance(account);
+      setLpTokensBalance(balance);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [account, toast]);
+
   useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const balance = await dex_getLpTokensBalance(account);
-        setLpTokensBalance(balance);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchBalance();
-  }, [account, handleRemoveLiquidity]);
+  }, [account, fetchBalance]);
 
   const formatAmount = (value: number): string => {
     return value.toFixed(2);
@@ -60,6 +62,7 @@ export default function RemoveLiquidity() {
 
     try {
       await dex_removeLiquidity(amount, account);
+      await fetchBalance();
       toast({
         title: "Success!",
         description: "Your Remove Liquidity was successful.",

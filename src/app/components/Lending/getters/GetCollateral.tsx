@@ -10,6 +10,7 @@ export default function GetCollateral() {
   const [balanceInUSD, setBalanceInUSD] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === '' || account.length !== 42) return;
     const fetchCollateral = async () => {
       try {
         const userBalance = await getUserCollateral(account);

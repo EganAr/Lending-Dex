@@ -9,6 +9,7 @@ export default function GetPrice() {
   const [price, setPrice] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === "" || account.length !== 42) return;
     const fetchCollateralPrice = async () => {
       if (account && account !== "" && account.length === 42) {
         try {

@@ -9,6 +9,7 @@ export default function GetHealthFactor() {
   const [userHealthFactor, setUserHealthFactor] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === '' || account.length !== 42) return;
     const fetchHealthFactor = async () => {
       try {
         const { healthFactor } = await getHealthFactor(account);

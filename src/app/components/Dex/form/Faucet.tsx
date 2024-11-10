@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -17,8 +17,8 @@ export default function Faucet() {
   const { account } = useWallet();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    firstToken: "",
-    secondToken: "",
+    firstToken: "ETH",
+    secondToken: "DAI",
     firstTokenAmount: "",
     secondTokenAmount: "",
     loading: false,
@@ -28,32 +28,29 @@ export default function Faucet() {
     secondTokenPriceInUSD: "0",
   });
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (account && account !== "" && account.length === 42) {
-        try {
-          const { ethPrice, daiPrice } = await dex_getPrice();
-          const BalanceEth = await dex_walletBalanceEth(account);
-          const BalanceDai = await dex_walletBalanceDai(account);
+  const fetchBalance = useCallback(async () => {
+    if (!account || account === "" || account.length !== 42) return;
+    try {
+      const { ethPrice, daiPrice } = await dex_getPrice();
+      const BalanceEth = await dex_walletBalanceEth(account);
+      const BalanceDai = await dex_walletBalanceDai(account);
 
-          setFormData((prev) => ({
-            ...prev,
-            firstTokenBalance:
-              prev.firstToken === "ETH" ? BalanceEth : BalanceDai,
-            firstTokenPriceInUSD:
-              prev.firstToken === "ETH" ? ethPrice : daiPrice,
-            secondTokenBalance:
-              prev.secondToken === "ETH" ? BalanceEth : BalanceDai,
-            secondTokenPriceInUSD:
-              prev.secondToken === "ETH" ? ethPrice : daiPrice,
-          }));
-        } catch (error) {
-          console.error("Error fetching Balance:", error);
-        }
-      }
-    };
+      setFormData((prev) => ({
+        ...prev,
+        firstTokenBalance: prev.firstToken === "ETH" ? BalanceEth : BalanceDai,
+        firstTokenPriceInUSD: prev.firstToken === "ETH" ? ethPrice : daiPrice,
+        secondTokenBalance:
+          prev.secondToken === "ETH" ? BalanceEth : BalanceDai,
+        secondTokenPriceInUSD: prev.secondToken === "ETH" ? ethPrice : daiPrice,
+      }));
+    } catch (error) {
+      console.error("Error fetching Balance:", error);
+    }
+  }, [account, toast]);
+
+  useEffect(() => {
     fetchBalance();
-  }, [formData.firstToken, formData.secondToken, handleFaucet]);
+  }, [formData.firstToken, formData.secondToken, fetchBalance]);
 
   useEffect(() => {
     if (formData.firstToken === "DAI") {
@@ -111,6 +108,7 @@ export default function Faucet() {
         await dex_faucetDai(formData.secondTokenAmount, account);
       }
 
+      await fetchBalance();
       toast({
         title: "Success!",
         description: "Your Faucet was successful.",

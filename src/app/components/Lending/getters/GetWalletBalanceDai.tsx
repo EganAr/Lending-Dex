@@ -9,16 +9,15 @@ export default function GetWalletBalanceDai() {
   const [walletBalance, setWalletBalance] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === "" || account.length !== 42) return;
     const fetchUserWalletBalance = async () => {
-      if (account && account !== "" && account.length === 42) {
-        try {
-          const userWalletBalance = await getDaiWalletBalance(account);
+      try {
+        const userWalletBalance = await getDaiWalletBalance(account);
 
-          setWalletBalance(userWalletBalance);
-        } catch (error) {
-          console.error("Error fetching balance:", error);
-          setWalletBalance("0");
-        }
+        setWalletBalance(userWalletBalance);
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        setWalletBalance("0");
       }
     };
     fetchUserWalletBalance();

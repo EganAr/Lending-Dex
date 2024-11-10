@@ -9,6 +9,7 @@ export default function GetBorrowLimit() {
   const [balance, setBalance] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === "" || account.length !== 42) return;
     const fetchBorrowLimit = async () => {
       try {
         const userBorrow = await getBorrowLimit(account);

@@ -9,6 +9,7 @@ export default function GetUserDeposit() {
   const [balance, setBalance] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === '' || account.length !== 42) return;
     const fetchDeposit = async () => {
       try {
         const userDeposit = await getUserDeposit(account);

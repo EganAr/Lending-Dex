@@ -9,6 +9,7 @@ export default function GetNetWorth() {
   const [userNetWorth, setuserNetWorth] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === '' || account.length !== 42) return;
     const fetchNetWorth = async () => {
       try {
         const netWorth = await getNetWorth(account);

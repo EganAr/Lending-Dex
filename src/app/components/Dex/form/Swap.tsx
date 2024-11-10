@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import {
   dex_getOutputAmountOut,
@@ -16,8 +16,8 @@ import TokenDisplay, { TOKEN } from "../SwapComponents";
 
 export default function Swap() {
   const [formData, setFormData] = useState({
-    tokenIn: "",
-    tokenOut: "",
+    tokenIn: "ETH",
+    tokenOut: "DAI",
     amountIn: "",
     amountOut: "",
     loading: false,
@@ -31,30 +31,34 @@ export default function Swap() {
   const { account } = useWallet();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const { ethPrice, daiPrice } = await dex_getPrice();
-        const BalanceEth = await dex_walletBalanceEth(account);
-        const BalanceDai = await dex_walletBalanceDai(account);
+  const fetchBalance = useCallback(async () => {
+    if (!account || account === "" || account.length !== 42) return;
+    try {
+      const { ethPrice, daiPrice } = await dex_getPrice();
+      const BalanceEth = await dex_walletBalanceEth(account);
+      const BalanceDai = await dex_walletBalanceDai(account);
 
-        setEthBalance(BalanceEth);
-        setDaiBalance(BalanceDai);
-        setFormData((prev) => ({
-          ...prev,
-          tokenInBalance: prev.tokenIn === "ETH" ? BalanceEth : BalanceDai,
-          tokenInPriceInUSD: prev.tokenIn === "ETH" ? ethPrice : daiPrice,
-          tokenOutBalance: prev.tokenOut === "ETH" ? BalanceEth : BalanceDai,
-          tokenOutPriceInUSD: prev.tokenOut === "ETH" ? ethPrice : daiPrice,
-        }));
-      } catch (error) {
-        console.error("Error fetching Balance:", error);
-      }
-    };
+      setEthBalance(BalanceEth);
+      setDaiBalance(BalanceDai);
+      setFormData((prev) => ({
+        ...prev,
+        tokenInBalance: prev.tokenIn === "ETH" ? BalanceEth : BalanceDai,
+        tokenInPriceInUSD: prev.tokenIn === "ETH" ? ethPrice : daiPrice,
+        tokenOutBalance: prev.tokenOut === "ETH" ? BalanceEth : BalanceDai,
+        tokenOutPriceInUSD: prev.tokenOut === "ETH" ? ethPrice : daiPrice,
+      }));
+    } catch (error) {
+      console.error("Error fetching Balance:", error);
+    }
+  }, [account, toast]);
+
+  useEffect(() => {
     fetchBalance();
-  }, [formData.tokenIn, formData.tokenOut, handleSwap]);
+  }, [formData.tokenIn, formData.tokenOut, fetchBalance]);
 
   useEffect(() => {
+    if (formData.amountIn === "" || formData.amountIn === "0") return;
+    if (!account || account === "" || account.length !== 42) return;
     const fetchOutputAmount = async () => {
       try {
         const outputAmount = await dex_getOutputAmountOut(
@@ -120,6 +124,8 @@ export default function Swap() {
         formData.amountOut.toString(),
         account
       );
+      await fetchBalance();
+
       toast({
         title: "Success!",
         description: "Your Swap was successful.",

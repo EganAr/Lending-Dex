@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { getUserBorrow, repayBorrow } from "@/web3";
 import Image from "next/image";
@@ -9,27 +9,27 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function RepayButton() {
-  const { account } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const { account } = useWallet();
   const { toast } = useToast();
 
+  const fetchUserBorrow = useCallback(async () => {
+    if (!account || account === '' || account.length !== 42) return;
+    try {
+      const userDeposit = await getUserBorrow(account);
+      setBalance(userDeposit);
+    } catch (error) {
+      console.error("Error fetching Borrow:", error);
+      setBalance("0");
+    }
+  }, [account, toast]);
+
   useEffect(() => {
-    const fetchUserBorrow = async () => {
-      if (account && account !== "" && account.length === 42) {
-        try {
-          const userDeposit = await getUserBorrow(account);
-          setBalance(userDeposit);
-        } catch (error) {
-          console.error("Error fetching Borrow:", error);
-          setBalance("0");
-        }
-      }
-    };
     fetchUserBorrow();
-  }, [account, handleRepay]);
+  }, [account, fetchUserBorrow]);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -42,7 +42,6 @@ export default function RepayButton() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
-    // Hanya mengizinkan angka dan satu titik desimal
     if (value === "" || /^\d*\.?\d*$/.test(value)) {
       const numValue = parseFloat(value || "0");
       const maxValue = parseFloat(balance);
@@ -71,6 +70,7 @@ export default function RepayButton() {
 
     try {
       await repayBorrow(amount.toString(), account);
+      await fetchUserBorrow();
 
       toast({
         title: "Success!",

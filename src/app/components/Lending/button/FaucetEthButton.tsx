@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { faucetCollateral } from "@/web3";
 import Image from "next/image";
-import GetHealthFactor from "../getters/GetHealthFactor";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 

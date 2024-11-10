@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { getUserCollateral, redeemCollateral } from "@/web3";
 import Image from "next/image";
@@ -9,26 +9,28 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function WithdrawButton() {
-  const { account } = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   const [balance, setBalance] = useState("");
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { account } = useWallet();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        const userBalance = await getUserCollateral(account);
+  const fetchBalance = useCallback( async () => {
+    if (!account || account === '' || account.length !== 42) return;
+    try {
+      const userBalance = await getUserCollateral(account);
 
-        setBalance(userBalance);
-      } catch (error) {
-        console.error("Error fetching user collateral:", error);
-        setBalance("0");
-      }
-    };
+      setBalance(userBalance);
+    } catch (error) {
+      console.error("Error fetching user collateral:", error);
+      setBalance("0");
+    }
+  }, [account, toast]);
+
+  useEffect(() => {
     fetchBalance();
-  }, [account,handleWithdraw]);
+  }, [account, fetchBalance]);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -54,7 +56,7 @@ export default function WithdrawButton() {
     }
   };
 
-  async function handleWithdraw (e: React.FormEvent) {
+  async function handleWithdraw(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
 
@@ -70,6 +72,7 @@ export default function WithdrawButton() {
 
     try {
       await redeemCollateral(amount.toString(), account);
+      await fetchBalance();
 
       toast({
         title: "Success!",
@@ -87,7 +90,7 @@ export default function WithdrawButton() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
     <div>

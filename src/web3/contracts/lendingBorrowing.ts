@@ -1,8 +1,6 @@
 import { ARBITRUM_SEPOLIA_LendingBorrowingContract } from "./contractAddresses";
 import CollateralTokenABI from "../abi/lending/LendingV7#lending_CollateralTokenV7.json";
 import DaiTokenABI from "../abi/lending/LendingV7#lending_DAITokenV7.json";
-import PriceFeedEthABI from "../abi/lending/LendingV7#eth_usd_adapterV7.json";
-import PriceFeedDaiABI from "../abi/lending/LendingV7#dai_usd_adapterV7.json";
 import LendingBorrowingABI from "../abi/lending/LendingV7#lendingV7.json";
 import Web3 from "web3";
 
@@ -24,14 +22,6 @@ const collateralToken = new web3.eth.Contract(
 const daiToken = new web3.eth.Contract(
   DaiTokenABI.abi,
   ARBITRUM_SEPOLIA_LendingBorrowingContract.DAIToken
-);
-const priceFeedEth = new web3.eth.Contract(
-  PriceFeedEthABI.abi,
-  ARBITRUM_SEPOLIA_LendingBorrowingContract.PriceFeedEth
-);
-const priceFeedDai = new web3.eth.Contract(
-  PriceFeedDaiABI.abi,
-  ARBITRUM_SEPOLIA_LendingBorrowingContract.PriceFeedDai
 );
 const lendingBorrowing = new web3.eth.Contract(
   LendingBorrowingABI.abi,

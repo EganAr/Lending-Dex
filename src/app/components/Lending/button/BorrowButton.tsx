@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useWallet from "../../ConnectWallet";
 import { borrow, getBorrowLimit } from "@/web3";
 import Image from "next/image";
@@ -9,27 +9,27 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 export default function BorrowButton() {
-  const { account } = useWallet();
   const [amount, setAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const [balance, setBalance] = useState<string>("");
+  const { account } = useWallet();
+  const { toast } = useToast();
+
+  const fetchBorrowLimit = useCallback(async () => {
+    if (!account || account === "" || account.length !== 42) return;
+    try {
+      const userBorrow = await getBorrowLimit(account);
+      setBalance(userBorrow);
+    } catch (error) {
+      console.error("Error fetching BorrowLimit:", error);
+      setBalance("0");
+    }
+  }, [account, toast]);
 
   useEffect(() => {
-    const fetchBorrowLimit = async () => {
-      if (account && account !== "" && account.length === 42) {
-        try {
-          const userBorrow = await getBorrowLimit(account);
-          setBalance(userBorrow);
-        } catch (error) {
-          console.error("Error fetching BorrowLimit:", error);
-          setBalance("0");
-        }
-      }
-    };
     fetchBorrowLimit();
-  }, [account, handleBorrow]);
+  }, [account, fetchBorrowLimit]);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -71,6 +71,7 @@ export default function BorrowButton() {
 
     try {
       await borrow(amount.toString(), account);
+      await fetchBorrowLimit();
       toast({
         title: "Success!",
         description: "Your Borrow was successful.",

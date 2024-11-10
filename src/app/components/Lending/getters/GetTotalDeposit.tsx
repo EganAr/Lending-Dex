@@ -9,6 +9,7 @@ export default function GetTotalDeposit() {
   const [totalDeposited, setTotalDeposited] = useState<string>();
 
   useEffect(() => {
+    if (!account || account === '' || account.length !== 42) return;
     const fetchDeposited = async () => {
       try {
         const totalDai = await getTotalDeposit();
