@@ -25,7 +25,7 @@ export default function RepayButton() {
       console.error("Error fetching Borrow:", error);
       setBalance("0");
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchUserBorrow();

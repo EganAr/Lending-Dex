@@ -17,7 +17,6 @@ export const WalletProvider: React.FC<{
 
   const handleConnectWallet = async () => {
     const connectedAccount = await connectWallet();
-    console.log("connectedAccount", connectedAccount);
 
     if (connectedAccount) {
       setAccount(connectedAccount);

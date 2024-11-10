@@ -26,7 +26,7 @@ export default function SupplyButton() {
       console.error("Error fetching collateral:", error);
       setWalletBalance("0");
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchWalletBalance();

@@ -1,15 +1,47 @@
-import BorrowButton from "@/app/components/Lending/button/BorrowButton";
-import RepayButton from "@/app/components/Lending/button/RepayButton";
-import SupplyButton from "@/app/components/Lending/button/SupplyButton";
-import WithdrawButton from "@/app/components/Lending/button/WithdrawButton";
-import GetBorrow from "@/app/components/Lending/getters/GetBorrow";
-import GetCollateral from "@/app/components/Lending/getters/GetCollateral";
-import GetHealthFactor from "@/app/components/Lending/getters/GetHealthFactor";
-import Navbar from "@/app/components/Navbar";
+const BorrowButton = dynamic(
+  () => import("@/app/components/Lending/button/BorrowButton"),
+  { ssr: false }
+);
+const RepayButton = dynamic(
+  () => import("@/app/components/Lending/button/RepayButton"),
+  { ssr: false }
+);
+const SupplyButton = dynamic(
+  () => import("@/app/components/Lending/button/SupplyButton"),
+  { ssr: false }
+);
+const WithdrawButton = dynamic(
+  () => import("@/app/components/Lending/button/WithdrawButton"),
+  { ssr: false }
+);
+const GetBorrow = dynamic(
+  () => import("@/app/components/Lending/getters/GetBorrow"),
+  { ssr: false }
+);
+const GetCollateral = dynamic(
+  () => import("@/app/components/Lending/getters/GetCollateral"),
+  { ssr: false }
+);
+const GetBorrowLimit = dynamic(
+  () => import("@/app/components/Lending/getters/GetBorrowLimit"),
+  { ssr: false }
+);
+const GetWalletBalanceEth = dynamic(
+  () => import("@/app/components/Lending/getters/GetWalletBalanceEth"),
+  { ssr: false }
+);
+
+const GetNetWorth = dynamic(
+  () => import("@/app/components/Lending/getters/GetNetWorth"),
+  { ssr: false }
+);
+const GetHealthFactor = dynamic(
+  () => import("@/app/components/Lending/getters/GetHealthFactor"),
+  { ssr: false }
+);
 import Image from "next/image";
-import GetWalletBalanceEth from "@/app/components/Lending/getters/GetWalletBalanceEth";
-import GetBorrowLimit from "@/app/components/Lending/getters/GetBorrowLimit";
-import GetNetWorth from "@/app/components/Lending/getters/GetNetWorth";
+import Navbar from "@/app/components/Navbar";
+import dynamic from "next/dynamic";
 
 export default function LendingPage() {
   return (

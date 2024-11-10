@@ -1,6 +1,12 @@
-import LiquidatorDashboard from "@/app/components/Lending/LiquidatorDashboard";
+// import LiquidatorDashboard from "@/app/components/Lending/LiquidatorDashboard";
 import Navbar from "@/app/components/Navbar";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+
+const LiquidatorDashboard = dynamic(
+  () => import("@/app/components/Lending/LiquidatorDashboard"),
+  { ssr: false }
+);
 
 export default function LiquidityPage() {
   return (

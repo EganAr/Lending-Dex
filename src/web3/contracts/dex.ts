@@ -9,9 +9,9 @@ interface TotalSupplyResult {
   1: string;
 }
 
-const web3 = new Web3(window.ethereum);
+const web3 =
+  typeof window !== "undefined" ? new Web3(window.ethereum) : undefined;
 if (!web3) throw new Error("Please install MetaMask");
-
 
 const dex_daiToken = new web3.eth.Contract(
   Dex_daiTokenABI.abi,

@@ -1,13 +1,41 @@
-import FaucetDaiButton from "@/app/components/Lending/button/FaucetDaiButton";
-import FaucetEthButton from "@/app/components/Lending/button/FaucetEthButton";
-import FundingButton from "@/app/components/Lending/button/FundingButton";
-import WithdrawFundButton from "@/app/components/Lending/button/WithdrawFundButton";
-import GetNetWorth from "@/app/components/Lending/getters/GetNetWorth";
-import GetTotalDeposit from "@/app/components/Lending/getters/GetTotalDeposit";
-import GetUserDeposit from "@/app/components/Lending/getters/GetUserDeposit";
-import GetWalletBalanceDai from "@/app/components/Lending/getters/GetWalletBalanceDai";
-import GetWalletBalanceEth from "@/app/components/Lending/getters/GetWalletBalanceEth";
+const FaucetDaiButton = dynamic(
+  () => import("@/app/components/Lending/button/FaucetDaiButton"),
+  { ssr: false }
+);
+const FaucetEthButton = dynamic(
+  () => import("@/app/components/Lending/button/FaucetEthButton"),
+  { ssr: false }
+);
+const FundingButton = dynamic(
+  () => import("@/app/components/Lending/button/FundingButton"),
+  { ssr: false }
+);
+const WithdrawFundButton = dynamic(
+  () => import("@/app/components/Lending/button/WithdrawFundButton"),
+  { ssr: false }
+);
+const GetNetWorth = dynamic(
+  () => import("@/app/components/Lending/getters/GetNetWorth"),
+  { ssr: false }
+);
+const GetTotalDeposit = dynamic(
+  () => import("@/app/components/Lending/getters/GetTotalDeposit"),
+  { ssr: false }
+);
+const GetUserDeposit = dynamic(
+  () => import("@/app/components/Lending/getters/GetUserDeposit"),
+  { ssr: false }
+);
+const GetWalletBalanceDai = dynamic(
+  () => import("@/app/components/Lending/getters/GetWalletBalanceDai"),
+  { ssr: false }
+);
+const GetWalletBalanceEth = dynamic(
+  () => import("@/app/components/Lending/getters/GetWalletBalanceEth"),
+  { ssr: false }
+);
 import Navbar from "@/app/components/Navbar";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 
 export default function FundAndFaucetPage() {

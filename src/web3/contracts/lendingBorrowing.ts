@@ -12,7 +12,7 @@ interface HealthFactorResult {
   __length__: number;
 }
 
-const web3 = new Web3(window.ethereum);
+const web3 = typeof window !== "undefined" ? new Web3(window.ethereum) : undefined;
 if (!web3) throw new Error("Please install MetaMask");
 
 const collateralToken = new web3.eth.Contract(

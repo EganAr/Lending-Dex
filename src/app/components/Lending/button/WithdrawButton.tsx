@@ -26,7 +26,7 @@ export default function WithdrawButton() {
       console.error("Error fetching user collateral:", error);
       setBalance("0");
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBalance();

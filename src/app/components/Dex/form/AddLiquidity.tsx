@@ -50,13 +50,14 @@ export default function AddLiquidity() {
     } catch (error) {
       console.error("Error fetching Balance:", error);
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBalance();
   }, [formData.firstToken, formData.secondToken, fetchBalance]);
 
   useEffect(() => {
+    if (!formData.firstTokenAmount || formData.firstTokenAmount === "") return;
     const fetchOutputAmount = async () => {
       try {
         const outputAmount = await dex_getOutputLiquidity(
@@ -69,7 +70,7 @@ export default function AddLiquidity() {
       }
     };
     fetchOutputAmount();
-  }, [formData.firstTokenAmount]);
+  }, [formData.firstTokenAmount, formData.firstToken]);
 
   useEffect(() => {
     if (formData.firstToken === "DAI") {

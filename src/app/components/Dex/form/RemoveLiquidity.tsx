@@ -21,7 +21,7 @@ export default function RemoveLiquidity() {
     } catch (error) {
       console.log(error);
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBalance();

@@ -1,9 +1,24 @@
-import FormDex from "@/app/components/Dex/Form";
-import GetTotalLiquiditySupply from "@/app/components/Dex/getters/GetTotalLiquiditySupply";
-import GetUserLiquidityDai from "@/app/components/Dex/getters/GetUserLiquidityDai";
-import GetUserLiquidityEth from "@/app/components/Dex/getters/GetUserLiquidityEth";
-import GetUserLpTokens from "@/app/components/Dex/getters/GetUserLpTokens";
+const FormDex = dynamic(() => import("@/app/components/Dex/Form"), {
+  ssr: false,
+});
+const GetTotalLiquiditySupply = dynamic(
+  () => import("@/app/components/Dex/getters/GetTotalLiquiditySupply"),
+  { ssr: false }
+);
+const GetUserLiquidityDai = dynamic(
+  () => import("@/app/components/Dex/getters/GetUserLiquidityDai"),
+  { ssr: false }
+);
+const GetUserLiquidityEth = dynamic(
+  () => import("@/app/components/Dex/getters/GetUserLiquidityEth"),
+  { ssr: false }
+);
+const GetUserLpTokens = dynamic(
+  () => import("@/app/components/Dex/getters/GetUserLpTokens"),
+  { ssr: false }
+);
 import Navbar from "@/app/components/Navbar";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 
 export default function dexPage() {

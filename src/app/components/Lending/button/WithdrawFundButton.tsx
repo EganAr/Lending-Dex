@@ -24,7 +24,7 @@ export default function WithdrawFundButton() {
     } catch (error) {
       console.log("error fetching balance", error);
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBalance();

@@ -25,7 +25,7 @@ export default function BorrowButton() {
       console.error("Error fetching BorrowLimit:", error);
       setBalance("0");
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBorrowLimit();

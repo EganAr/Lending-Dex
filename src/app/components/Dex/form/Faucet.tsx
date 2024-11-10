@@ -46,7 +46,7 @@ export default function Faucet() {
     } catch (error) {
       console.error("Error fetching Balance:", error);
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBalance();

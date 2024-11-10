@@ -50,7 +50,7 @@ export default function Swap() {
     } catch (error) {
       console.error("Error fetching Balance:", error);
     }
-  }, [account, toast]);
+  }, [account]);
 
   useEffect(() => {
     fetchBalance();
@@ -58,7 +58,6 @@ export default function Swap() {
 
   useEffect(() => {
     if (formData.amountIn === "" || formData.amountIn === "0") return;
-    if (!account || account === "" || account.length !== 42) return;
     const fetchOutputAmount = async () => {
       try {
         const outputAmount = await dex_getOutputAmountOut(
@@ -71,9 +70,11 @@ export default function Swap() {
       }
     };
     fetchOutputAmount();
-  }, [formData.amountIn]);
+  }, [formData.amountIn, formData.tokenIn]);
 
   useEffect(() => {
+    if (formData.tokenIn === "") return;
+
     if (formData.tokenIn === "DAI") {
       setFormData((prev) => ({ ...prev, tokenOut: "ETH" }));
     } else if (formData.tokenIn === "ETH") {
